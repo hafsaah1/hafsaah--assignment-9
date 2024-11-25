@@ -10,19 +10,19 @@ from matplotlib import cm
 result_dir = "results"
 os.makedirs(result_dir, exist_ok=True)
 
-# 定义一个简单的 MLP 类
+
 class MLP:
     def __init__(self, input_dim, hidden_dim, output_dim, lr, activation='tanh'):
         np.random.seed(0)
-        self.lr = lr  # 学习率
+        self.lr = lr  
 
-        # 初始化权重和偏置
+        
         self.W1 = np.random.randn(input_dim, hidden_dim)
         self.b1 = np.zeros((1, hidden_dim))
         self.W2 = np.random.randn(hidden_dim, output_dim)
         self.b2 = np.zeros((1, output_dim))
 
-        # 定义激活函数及其导数
+        
         if activation == 'tanh':
             self.activation = np.tanh
             self.activation_deriv = lambda x: 1 - np.tanh(x) ** 2
@@ -38,16 +38,16 @@ class MLP:
         self.output_activation_deriv = lambda x: 1 - np.tanh(x) ** 2
 
     def forward(self, X):
-        self.X = X  # 存储输入以供后向传播使用
+        self.X = X  
         self.Z1 = X.dot(self.W1) + self.b1
-        self.A1 = self.activation(self.Z1)  # 隐藏层激活值
+        self.A1 = self.activation(self.Z1) 
         self.Z2 = self.A1.dot(self.W2) + self.b2
-        self.A2 = self.output_activation(self.Z2)  # 输出层激活值
+        self.A2 = self.output_activation(self.Z2)  
         return self.A2
 
     def backward(self, X, y):
         m = y.shape[0]
-        dA2 = (self.A2 - y) * self.output_activation_deriv(self.Z2)  # 损失对 A2 的导数
+        dA2 = (self.A2 - y) * self.output_activation_deriv(self.Z2) 
         dW2 = self.A1.T.dot(dA2) / m
         db2 = np.sum(dA2, axis=0, keepdims=True) / m
 
@@ -66,7 +66,7 @@ class MLP:
 def generate_data(n_samples=100):
     np.random.seed(0)
     X = np.random.randn(n_samples, 2)
-    y = (X[:, 0] ** 2 + X[:, 1] ** 2 > 1).astype(int) * 2 - 1  # 圆形边界
+    y = (X[:, 0] ** 2 + X[:, 1] ** 2 > 1).astype(int) * 2 - 1  
     y = y.reshape(-1, 1)
     return X, y
 
@@ -125,16 +125,16 @@ def update(frame, mlp, ax_input, ax_hidden, ax_gradient, X, y):
     for i, (x0, y0) in enumerate(neuron_positions[0]):
         for j, (x1, y1) in enumerate(neuron_positions[1]):
             weight = mlp.W1[i, j]
-            weight_norm = np.abs(weight) / max_weight  # 归一化权值大小
-            color_intensity = cmap(1 - weight_norm)  # 映射到颜色（权值越大颜色越深）
+            weight_norm = np.abs(weight) / max_weight  
+            color_intensity = cmap(1 - weight_norm) 
             ax_gradient.plot([x0, x1], [y0, y1], color=color_intensity, linewidth=2)
 
    
     for i, (x0, y0) in enumerate(neuron_positions[1]):
         for j, (x1, y1) in enumerate(neuron_positions[2]):
             weight = mlp.W2[i, j]
-            weight_norm = np.abs(weight) / max_weight  # 归一化权值大小
-            color_intensity = cmap(1 - weight_norm)  # 映射到颜色（权值越大颜色越深）
+            weight_norm = np.abs(weight) / max_weight  
+            color_intensity = cmap(1 - weight_norm)  
             ax_gradient.plot([x0, x1], [y0, y1], color=color_intensity, linewidth=2)
 
     ax_gradient.set_xlim(-0.5, 2.5)
